@@ -8,8 +8,14 @@ rattler-build = ">=0.35"
 python = ">=3.12"
 
 [tasks]
-publish-all-signed = "python scripts/publish.py all-signed"
-publish-last-version-unsigned = "python scripts/publish.py last-version-unsigned"
-publish-variants-unsigned = "python scripts/publish.py variants-unsigned"
+publish-all-signed = "python scripts/publish.py publish all-signed"
+publish-last-version-unsigned = "python scripts/publish.py publish last-version-unsigned"
+publish-variants-unsigned = "python scripts/publish.py publish variants-unsigned"
 publish-all = { depends-on = ["publish-all-signed", "publish-last-version-unsigned", "publish-variants-unsigned"] }
+
+delete-all-signed = "python scripts/publish.py delete all-signed"
+delete-last-version-unsigned = "python scripts/publish.py delete last-version-unsigned"
+delete-variants-unsigned = "python scripts/publish.py delete variants-unsigned"
+delete-all = "python scripts/publish.py delete all"
+
 trigger = "gh workflow run publish.yml"
