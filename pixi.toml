@@ -12,3 +12,4 @@ publish-all-signed = "python scripts/publish.py all-signed"
 publish-last-version-unsigned = "python scripts/publish.py last-version-unsigned"
 publish-variants-unsigned = "python scripts/publish.py variants-unsigned"
 publish-all = { depends-on = ["publish-all-signed", "publish-last-version-unsigned", "publish-variants-unsigned"] }
+trigger = "gh workflow run publish.yml"
