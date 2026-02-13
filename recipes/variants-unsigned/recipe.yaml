@@ -1,0 +1,15 @@
+package:
+  name: variants-unsigned
+  version: "1.0.0"
+
+build:
+  number: 0
+  script:
+    - mkdir -p $PREFIX/bin
+    - echo "variants-unsigned v1.0.0" > $PREFIX/bin/hello
+
+requirements:
+  host:
+    - python
+  run:
+    - python

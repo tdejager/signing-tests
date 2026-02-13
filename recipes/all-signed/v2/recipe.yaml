@@ -1,0 +1,10 @@
+package:
+  name: all-signed
+  version: "2.0.0"
+
+build:
+  number: 0
+  noarch: generic
+  script:
+    - mkdir -p $PREFIX/bin
+    - echo "all-signed v2.0.0" > $PREFIX/bin/hello
