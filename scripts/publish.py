@@ -28,7 +28,7 @@ PACKAGES = {
 def build_recipe(recipe_path, output_dir, variant_config=None, target_platform=None):
     """Build a recipe with rattler-build."""
     channel_url = f"{BASE_URL}/{CHANNEL}"
-    cmd = ["rattler-build", "build", "-r", str(recipe_path), "--output-dir", str(output_dir), "--skip-existing", "all", "-c", channel_url]
+    cmd = ["rattler-build", "build", "-r", str(recipe_path), "--output-dir", str(output_dir), "--skip-existing", "all", "-c", channel_url, "-c", "conda-forge"]
     if variant_config:
         cmd += ["-m", str(variant_config)]
     if target_platform:
