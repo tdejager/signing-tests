@@ -12,7 +12,8 @@ OUTPUT_DIR = ROOT / "output"
 
 def build_recipe(recipe_path, output_dir, variant_config=None, target_platform=None):
     """Build a recipe with rattler-build."""
-    cmd = ["rattler-build", "build", "-r", str(recipe_path), "--output-dir", str(output_dir)]
+    channel_url = f"{BASE_URL}/channels/{CHANNEL}"
+    cmd = ["rattler-build", "build", "-r", str(recipe_path), "--output-dir", str(output_dir), "--skip-existing", "all", "-c", channel_url]
     if variant_config:
         cmd += ["-m", str(variant_config)]
     if target_platform:
@@ -50,7 +51,11 @@ def publish_all_signed():
 
 
 def publish_last_version_unsigned():
-    """Build v1 + v2, upload v1 with attestation, v2 without."""
+    """Build v1 + v1.5 + v2, upload v1 and v2 signed, then v1.5 unsigned last.
+
+    Tests a bug where the channel stays "verified" because v2.0.0 (the latest
+    version) is signed, even though v1.5.0 (uploaded last) is unsigned.
+    """
     output_dir = OUTPUT_DIR / "last-version-unsigned"
     recipes = ROOT / "recipes" / "last-version-unsigned"
 
@@ -60,10 +65,15 @@ def publish_last_version_unsigned():
         build_recipe(version_dir / "recipe.yaml", output_dir)
 
     packages = sorted(output_dir.rglob("*.conda"))
-    for pkg in packages:
-        # v1 gets attestation, v2 does not
-        signed = "1.0.0" in pkg.name
-        upload_package(pkg, generate_attestation=signed)
+
+    # Upload signed versions first (v1.0.0, v2.0.0), then unsigned (v1.5.0) last
+    signed_pkgs = [p for p in packages if "1.5.0" not in p.name]
+    unsigned_pkgs = [p for p in packages if "1.5.0" in p.name]
+
+    for pkg in signed_pkgs:
+        upload_package(pkg, generate_attestation=True)
+    for pkg in unsigned_pkgs:
+        upload_package(pkg, generate_attestation=False)
 
 
 def publish_variants_unsigned():
